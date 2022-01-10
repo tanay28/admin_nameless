@@ -1,4 +1,5 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ViewportScroller } from "@angular/common";
 import { FormBuilder, Validators } from '@angular/forms';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { map, finalize } from "rxjs/operators";
@@ -6,27 +7,6 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import * as moment from 'moment';
 import { FirebaseService } from '../../__services/firebase.service';
-import {MatTableDataSource} from '@angular/material/table';
-
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
-];
 
 @Component({
   selector: 'app-our-works',
@@ -43,22 +23,25 @@ export class OurWorksComponent implements OnInit {
   uploadProgress: any;
   downloadURL: any;
   submitted = false;
+  submitted_films = false;
   basePath = '/films';
   imageList: any = [];
-  isAboutUsData: boolean = false;
+  isOurWorkData: boolean = false;
   position: any;
-  aboutusDataGiven: any;
+  ourWorkDataGiven: any;
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
   contentTYpe: any;
   dataSource: any;
   displayedColumns: any;
+  contentList: any = [];
   constructor(
     private fb: FormBuilder,
     private storage: AngularFireStorage,
     private spinner : NgxSpinnerService,
     private _snackBar: MatSnackBar,
-    private fbService: FirebaseService
+    private fbService: FirebaseService,
+    private scroller: ViewportScroller
   ) { }
 
   async ngOnInit()  {
@@ -70,12 +53,10 @@ export class OurWorksComponent implements OnInit {
       { id: 'upcoming', value: 'Upcoming' },
     ];
 
-     // Mat Table
-    this.displayedColumns = ['position', 'name', 'weight', 'symbol'];
-    this.dataSource = new MatTableDataSource(ELEMENT_DATA);
-
     this.submitted = false;
-    this.isAboutUsData = false;
+    this.submitted_films = false;
+    this.isOurWorkData = false;
+    this.contentList = [];
     this.myForm = this.fb.group({
       description: ["",Validators.required],
     });
@@ -88,11 +69,7 @@ export class OurWorksComponent implements OnInit {
     this.spinner.show();
     await this.getAllFilmsImages();
     await this.getOurWorksData();
-  }
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    await this.getAllContentData();
   }
 
   get fval(){return this.myForm.controls;}
@@ -100,18 +77,17 @@ export class OurWorksComponent implements OnInit {
 
   getOurWorksData() {
     return new Promise((resolve, reject) => {
-      this.fbService.getAllAboutUsData().subscribe((data: any) => {
+      this.fbService.getAllOurWorkData().subscribe((data: any) => {
         if(data.length > 0) {
-          this.isAboutUsData = true;
-          this.aboutusDataGiven = data[0];
+          this.isOurWorkData = true;
+          this.ourWorkDataGiven = data[0];
           this.myForm = this.fb.group({
-            description: [this.aboutusDataGiven.description,Validators.required],
+            description: [this.ourWorkDataGiven.description,Validators.required],
           });
           resolve('got it');
         } else {
-          this.isAboutUsData = false;
+          this.isOurWorkData = false;
           reject('no data');
-          this.spinner.hide();
         }
       });
     })
@@ -124,7 +100,7 @@ export class OurWorksComponent implements OnInit {
       return;
     }
     this.spinner.show();
-    if(!this.isAboutUsData) {
+    if(!this.isOurWorkData) {
       let now = moment().format('YYYY-MM-DDTHH:mm:ss');
       let aboutUsObj = {
         _id: '',
@@ -134,7 +110,7 @@ export class OurWorksComponent implements OnInit {
         author: 'CURRENT_USER'
       };
     
-      this.fbService.saveAboutUsData(aboutUsObj).then(async () => {
+      this.fbService.saveOurWorkData(aboutUsObj).then(async () => {
         this.myForm.reset();
         this.spinner.hide();
         this.submitted = false;
@@ -148,11 +124,11 @@ export class OurWorksComponent implements OnInit {
       let now = moment().format('YYYY-MM-DDTHH:mm:ss');
       let aboutUsObj = {
         description: this.fval.description.value,
-        createdAt: this.aboutusDataGiven.createdAt,
+        createdAt: this.ourWorkDataGiven.createdAt,
         modifiedAt: now,
         author: 'CURRENT_USER'
       };
-      this.fbService.updateAboutUsData(this.aboutusDataGiven._id,aboutUsObj).then(async () => {
+      this.fbService.updateOurWorkData(this.ourWorkDataGiven._id,aboutUsObj).then(async () => {
         this.myForm.reset();
         this.spinner.hide();
         this.submitted = false;
@@ -166,6 +142,37 @@ export class OurWorksComponent implements OnInit {
     }
     
   }
+
+  onSubmit_content() {
+    this.submitted_films = true;
+    if (this.myFilmForm.invalid) {
+      return;
+    }
+    this.spinner.show();
+    let now = moment().format('YYYY-MM-DDTHH:mm:ss');
+    let obj = {
+      _id: '',
+      contentType: this.flval.contentType.value,
+      genre: this.flval.genre.value,
+      shortdes: this.flval.shortdes.value,
+      youtubeLink: this.flval.youtubeLink.value,
+      posterImgUrl: this.downloadURL,
+      createdAt: now,
+      modifiedAt: now,
+      author: 'CURRENT_USER'
+    };
+    this.fbService.saveContentData(obj).then(() => {
+      this.submitted_films = false;
+      this.myFilmForm.reset();
+      this.spinner.hide();
+      this.ngOnInit();
+      this.scroller.scrollToAnchor('targetTop');
+    }).catch(err => {
+      this.submitted_films = false;
+      this.spinner.hide();
+    });
+  }
+
 
   saveWorkDetails(url: any, img: any) {
     return new Promise((resolve, reject) => {
@@ -188,11 +195,11 @@ export class OurWorksComponent implements OnInit {
   async uploadToFbStorage(img: any) {
     var n = Date.now();
     const fileImg = img;
-    const filePath = `achievements/${n}_${img.name}`;
+    const filePath = `films/${n}_${img.name}`;
     const imgName = `${n}_${img.name}`;
     return new Promise((resolve, reject) => {
       const fileRef = this.storage.ref(filePath);
-      const task = this.storage.upload(`achievements/${n}_${img.name}`, fileImg);
+      const task = this.storage.upload(`films/${n}_${img.name}`, fileImg);
       task.snapshotChanges().pipe (
           finalize(() => {
             let dwUrl;
@@ -223,7 +230,6 @@ export class OurWorksComponent implements OnInit {
   }
 
   getAllFilmsImages() {
-    this.spinner.show();
     this.imageList = [];
     return new Promise((resolve, reject) => {
       this.storage.storage.ref().child(this.basePath).listAll().then((res:any) => {
@@ -251,29 +257,7 @@ export class OurWorksComponent implements OnInit {
     });
   }
 
-  async removePhoto(img: any) {
-    const fieldName = 'imgUrl';
-    const removePromise = new Promise((resolve, reject) => {
-      this.fbService.queryAchievementDb(fieldName, img.path).subscribe((data: any) => {
-        if(data.length > 0) {
-          let docId = data[0]._id;
-          this.fbService.removeAchievements(docId).then(() => {
-            this.storage.storage.refFromURL(img.path).delete();
-          }).catch(err => {
-            console.log(err);
-            reject(err);
-          });
-        }
-        resolve(1);
-      });
-    });
-    await removePromise;
-    this.storage.storage.refFromURL(img.path).delete();
-    this.getAllFilmsImages();
-    return true;
-  }
-
-  openSnackBar(img: any) {
+  openSnackBar(openSnackBar: any) {
     let snackBarRef = this._snackBar.open('Are you sure..??', 'Delete', {
       horizontalPosition: this.horizontalPosition,
       verticalPosition: this.verticalPosition,
@@ -281,9 +265,69 @@ export class OurWorksComponent implements OnInit {
     });
     snackBarRef.afterDismissed().subscribe((res: any) => {
       if(res.dismissedByAction) {
-        this.removePhoto(img);
+        this.removeContent(openSnackBar);
       }
     });
   }
 
+  sanitizeData(data: any) {
+    let sanitizedData: any  = [];
+    data.forEach((content: any) => {
+      let obj = {
+        _id: content._id,
+        author: content.author,
+        contentType: content.contentType,
+        createdAt: content.createdAt,
+        genre: content.genre,
+        modifiedAt: content.modifiedAt,
+        posterImgUrl: content.posterImgUrl,
+        shortdes: content.shortdes,
+        youtubeLink: content.youtubeLink
+      };
+      sanitizedData.push(obj);
+    });
+    return sanitizedData;
+  }
+
+  getAllContentData() {
+    this.contentList = [];
+    this.spinner.show();
+    return new Promise((resolve, reject) => {
+      this.fbService.getAllContentData().subscribe((data: any) => {
+        if(data.length > 0) {
+          this.contentList = this.sanitizeData(data);
+          this.spinner.hide();
+          resolve('got content data');
+        } else {
+          this.spinner.hide();
+          reject('no content data');
+        }
+      })
+    })
+  }
+
+  removeContent(content: any) {
+    this.spinner.show();
+    const documentId = content._id;
+    const imgUrl = content.posterImgUrl;
+
+    this.fbService.removeContent(documentId).then(() => {
+      this.storage.storage.refFromURL(imgUrl).delete();
+      this.getAllContentData();
+      this.spinner.hide();
+    });
+    
+  }
+
+  loadContent(content: any) {
+    console.log(content);
+    this.myFilmForm.patchValue({
+      contentType: content.contentType,
+      genre: content.genre,
+      shortdes: content.shortdes,
+      youtubeLink: content.youtubeLink
+    });
+    this.scroller.scrollToAnchor('targetEdit');
+  }
+  
 }

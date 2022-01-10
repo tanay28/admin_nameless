@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from "@angular/fire/firestore";
-import { AchievementMaster,AboutUsMaster } from "../model/achievement";
+import { AchievementMaster, AboutUsMaster, OurWorkMaster, ContentMaster } from "../model/admin";
 import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
@@ -53,6 +53,65 @@ export class FirebaseService {
     return this.db.collection('aboutUsMaster').doc(documentId).set(data);
   }
   //------------------- END ---------------------//
+
+  //------------- Our Work Function --------------//
+  saveOurWorkData(data : OurWorkMaster) : Promise<any>{
+    const id = this.db.createId();
+    data._id = id;
+    return this.db.collection<OurWorkMaster>("ourWorkMaster").doc(id).set(data);
+  }
+
+  updateOurWorkData(documentId: any, data: any): Promise<any> {
+    data._id = documentId;  
+    return this.db.collection('ourWorkMaster').doc(documentId).set(data);
+  }
+
+  getAllOurWorkData() : Observable<OurWorkMaster[]>{
+    return this.db.collection<OurWorkMaster>('ourWorkMaster').valueChanges();
+  }
+
+  getSingleOurWorkData(id: any) : Observable<OurWorkMaster[]>{
+    return this.db.collection<OurWorkMaster>('ourWorkMaster',ref => ref.where('_id' ,'==', id)).valueChanges();
+  }
+  //------------------ END ----------------------//
+
+  //------------- Content Function --------------//
+  saveContentData(data : ContentMaster) : Promise<any>{
+    const id = this.db.createId();
+    data._id = id;
+    return this.db.collection<ContentMaster>("contentMaster").doc(id).set(data);
+  }
+
+  updateContentData(documentId: any, data: any): Promise<any> {
+    data._id = documentId;  
+    return this.db.collection('contentMaster').doc(documentId).set(data);
+  }
+
+  getAllContentData() : Observable<ContentMaster[]>{
+    return this.db.collection<ContentMaster>('contentMaster').valueChanges();
+  }
+
+  getSingleContentData(id: any) : Observable<ContentMaster[]>{
+    return this.db.collection<ContentMaster>('contentMaster',ref => ref.where('_id' ,'==', id)).valueChanges();
+  }
+  removeContent(documentId: any): Promise<any> {
+    return this.db.collection('contentMaster').doc(documentId).delete();
+  }
+  //------------------ END ----------------------//
+
+
+  //------- Generic Function ---------//
+  async deleteCollection(collectionName: any): Promise<any>{
+    return new Promise(async (resolve, reject) => {
+      const qry: firebase.firestore.QuerySnapshot = await this.db.collection(collectionName).ref.get();
+      qry.forEach(doc => {
+        doc.ref.delete();
+        resolve('deleted');
+      });
+    })
+    
+    
+  }
 
 
 

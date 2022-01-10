@@ -210,3 +210,9 @@ table {
     font-size: 14px;
     width: 100%;
 }
+
+.poster {
+    border-radius: 50%;
+    height: 80px;
+    width: 90px;
+}
