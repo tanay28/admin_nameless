@@ -20,13 +20,13 @@
 }
 
 .navbar {
-    background-image: linear-gradient(to right, #ffc72dec, #FFEA64) !important;
+    background-image: linear-gradient(to right, #2da0ffec, #6473ff) !important;
     padding: 5px;
     box-shadow: 15px 0px 10px grey;
 }
 
 .navbar-light .navbar-nav .nav-link {
-    color: black;
+    color: white;
 }
 
 .button {
