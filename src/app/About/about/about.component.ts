@@ -201,8 +201,9 @@ export class AboutComponent implements OnInit {
   }
 
   async removePhoto(img: any) {
+    const fieldName = 'imgUrl';
     const removePromise = new Promise((resolve, reject) => {
-      this.fbService.queryAchievementDb('imgUrl',img.path).subscribe((data: any) => {
+      this.fbService.queryAchievementDb(fieldName, img.path).subscribe((data: any) => {
         if(data.length > 0) {
           let docId = data[0]._id;
           this.fbService.removeAchievements(docId).then(() => {
