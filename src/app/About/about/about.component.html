@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<div class="container-fluid">
+    <div class="image">
+        <div class="wrapper">
+            <div class="row">
+                <div class="col">
+                    <h4>Manage Content</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <form class="my-form" [formGroup]="myForm" (ngSubmit)="onSubmit()" method="POST">
+                        <div class="form-group">
+                            <label for="des"><b>Describe About Us</b></label>
+                            <textarea class="form-control" id="des" rows="5" required formControlName="description"></textarea>
+                            <div *ngIf="submitted && fval.description.errors">
+                                <div *ngIf="fval.description.errors.required" style="color: red;margin: 5px;">
+                                    It is a required field
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="files"><b>Upload Achievements</b></label>
+                            <input type="file" name="uploadfile" (change)="upload($event)" multiple accept=".png,.jpg" id="img" style="display:none;"/>
+                            <label for="img"> 
+                                <img class="files" src="assets/img/upload.png" height="20px" width="20px" />
+                            </label>
+                        </div>
+
+                        <div class="form-group custom-btn">
+                            <button type="submit" class="btn-style">Submit</button>
+                        </div> 
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="preview-wrapper">
+            <div class="row">
+                <div class="col">
+                    <h4>Achievements</h4>
+                </div>
+            </div>
+            <mat-grid-list cols="6" rowHeight="1:1">
+                <mat-grid-tile *ngFor="let img of imageList; let i = index">
+                    <a style="cursor: pointer;" (click)="openSnackBar(img)">
+                        <img class="img-list" src="{{img.path}}" height="90px" width="85px" 
+                        />
+                    </a>
+                </mat-grid-tile>
+            </mat-grid-list>
+        </div>
+        
+    </div>
+</div>
+
+<ngx-spinner bgColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+    <p style="font-size: 20px; color: white">Please Wait...</p>
+</ngx-spinner>

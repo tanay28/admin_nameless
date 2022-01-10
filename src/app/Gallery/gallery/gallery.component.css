@@ -1,0 +1,183 @@
+/* html {
+    box-sizing: border-box;
+    background-size: cover;
+} */
+
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,600;1,400&display=swap');
+* {
+    margin: 0;
+    padding: 0;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+section {
+    margin: 0;
+    /* min-height: 100vh;
+    font-size: 1rem;
+    line-height: 1.25; */
+    /* background: url(night.jpg) no-repeat;
+    background-size: cover; */
+    /* background-image: linear-gradient(45deg, rgb(59, 75, 90), rgb(21, 31, 58)); */
+    background-color: rgba(255, 250, 158, 0.281);
+}
+
+.container-box {
+    align-items: center;
+    justify-content: center;
+    padding-top: 3%;
+}
+
+h1 {
+    color: black;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 600;
+}
+
+.grid {
+    width: 100%;
+    max-width: 60rem;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    margin-top: 60px !important;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.grid-block {
+    width: 50%;
+    min-height: 11.25rem;
+    padding: 3rem;
+}
+
+.image-grid {
+    -webkit-transform: rotateX(45deg) rotateZ(45deg);
+    transform: rotateX( 20deg) rotateZ( 0deg)!important;
+    -webkit-perspective: 1000px;
+    perspective: 1000px;
+    margin-top: 10rem;
+}
+
+.image-grid-2 {
+    -webkit-transform: rotateX(0deg) rotateZ(0deg);
+    transform: rotateX(20deg) rotateZ(0deg);
+    -webkit-perspective: 1000px;
+    perspective: 1000px;
+}
+
+.image-grid .tile-link:hover .tile-img {
+    top: -1rem;
+    left: -1rem;
+}
+
+.image-grid-2 .tile-link:hover .tile-img {
+    top: -1rem;
+    left: -1rem;
+}
+
+.image-grid .tile-img {
+    position: relative;
+    top: 0;
+    left: 0;
+    -webkit-transition-property: opacity, top, left, box-shadow;
+    transition-property: opacity, top, left, box-shadow;
+}
+
+.image-grid-2 .tile-img {
+    position: relative;
+    top: 0;
+    left: 0;
+    -webkit-transition-property: opacity, top, left, box-shadow;
+    transition-property: opacity, top, left, box-shadow;
+}
+
+.tile-link {
+    display: block;
+}
+
+.tile-link:hover .tile-img {
+    opacity: 1;
+}
+
+.tile-link:hover .tile-img-link {
+    display: block;
+}
+
+.tile-link:hover .tile-img-link:hover .tile-img {
+    opacity: 0.5;
+}
+
+.tile-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    opacity: 1;
+    -webkit-transition-property: opacity;
+    transition-property: opacity;
+    -webkit-transition-duration: 0.125s;
+    transition-duration: 0.125s;
+    -webkit-transition-timing-function: ease-in;
+    transition-timing-function: ease-in;
+}
+
+.tile-link:hover .tile-img1 {
+    box-shadow: 5px 5px rgba(91, 209, 250, 0.4), 10px 10px rgba(91, 209, 250, 0.3), 15px 15px rgba(91, 209, 250, 0.2), 20px 20px rgba(91, 209, 250, 0.1), 25px 25px rgba(91, 209, 250, 0.05);
+}
+
+.tile-link:hover .tile-img2 {
+    box-shadow: 5px 5px rgba(91, 209, 250, 0.4), 10px 10px rgba(91, 209, 250, 0.3), 15px 15px rgba(91, 209, 250, 0.2), 20px 20px rgba(91, 209, 250, 0.1), 25px 25px rgba(91, 209, 250, 0.05);
+}
+
+.tile-link:hover .tile-img3 {
+    box-shadow: 5px 5px rgba(91, 209, 250, 0.4), 10px 10px rgba(91, 209, 250, 0.3), 15px 15px rgba(91, 209, 250, 0.2), 20px 20px rgba(91, 209, 250, 0.1), 25px 25px rgba(91, 209, 250, 0.05);
+}
+
+.tile-link:hover .tile-img4 {
+    box-shadow: 5px 5px rgba(91, 209, 250, 0.4), 10px 10px rgba(91, 209, 250, 0.3), 15px 15px rgba(91, 209, 250, 0.2), 20px 20px rgba(91, 209, 250, 0.1), 25px 25px rgba(91, 209, 250, 0.05);
+}
+
+.tile-link:hover .tile-img5 {
+    box-shadow: 5px 5px rgba(91, 209, 250, 0.4), 10px 10px rgba(91, 209, 250, 0.3), 15px 15px rgba(91, 209, 250, 0.2), 20px 20px rgba(91, 209, 250, 0.1), 25px 25px rgba(91, 209, 250, 0.05);
+}
+
+.tile-link:hover .tile-img6 {
+    box-shadow: 5px 5px rgba(91, 209, 250, 0.4), 10px 10px rgba(91, 209, 250, 0.3), 15px 15px rgba(91, 209, 250, 0.2), 20px 20px rgba(91, 209, 250, 0.1), 25px 25px rgba(91, 209, 250, 0.05);
+}
+
+.tile-link:hover .tile-img7 {
+    box-shadow: 5px 5px rgba(91, 209, 250, 0.4), 10px 10px rgba(91, 209, 250, 0.3), 15px 15px rgba(91, 209, 250, 0.2), 20px 20px rgba(91, 209, 250, 0.1), 25px 25px rgba(91, 209, 250, 0.05);
+}
+
+.tile-link:hover .tile-img8 {
+    box-shadow: 5px 5px rgba(91, 209, 250, 0.4), 10px 10px rgba(91, 209, 250, 0.3), 15px 15px rgba(91, 209, 250, 0.2), 20px 20px rgba(91, 209, 250, 0.1), 25px 25px rgba(91, 209, 250, 0.05);
+}
+
+.tile-link:hover .tile-img9 {
+    box-shadow: 5px 5px rgba(91, 209, 250, 0.4), 10px 10px rgba(91, 209, 250, 0.3), 15px 15px rgba(91, 209, 250, 0.2), 20px 20px rgba(91, 209, 250, 0.1), 25px 25px rgba(91, 209, 250, 0.05);
+}
+
+.tile-link:hover .tile-img10 {
+    box-shadow: 5px 5px rgba(91, 209, 250, 0.4), 10px 10px rgba(91, 209, 250, 0.3), 15px 15px rgba(91, 209, 250, 0.2), 20px 20px rgba(91, 209, 250, 0.1), 25px 25px rgba(91, 209, 250, 0.05);
+}
+
+.image-grid {
+    -webkit-transform: rotateX( 45deg) rotateZ( 45deg);
+    transform: rotateX( 45deg) rotateZ( 30deg);
+    -webkit-perspective: 1000px;
+    perspective: 1000px;
+}
+
+@media (max-width:500px) {
+    .grid-block {
+        width: 50%;
+        min-height: 11.25rem;
+        padding: 1rem;
+    }
+}

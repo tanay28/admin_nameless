@@ -1,0 +1,54 @@
+.img {
+    width: 600%;
+}
+
+#img1 {
+    width: 100%;
+}
+
+.container-fluid {
+    padding: 0 !important;
+    margin: -20 !important;
+}
+
+body {
+    overflow-y: none;
+}
+
+.btn-danger {
+    position: absolute;
+    top: 70%;
+    left: 30%;
+    background-color: red!important;
+}
+
+.btn-primary {
+    position: absolute;
+    top: 70%;
+    left: 23%;
+}
+
+@media (max-width: 1400px) {
+    .btn {
+        display: none;
+    }
+}
+
+.tab-wrapper {
+    text-align: center;
+    width: 100%;
+    border: 1px;
+    padding: 50px;
+    margin: 0px;
+    background-color: azure;
+}
+
+#chartdiv_bar {
+    width: 100%;
+    height: 400px;
+}
+
+#chartdiv_line {
+    width: 100%;
+    height: 400px;
+}
