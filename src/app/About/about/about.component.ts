@@ -41,8 +41,13 @@ export class AboutComponent implements OnInit {
       description: ["",Validators.required],
     });
     this.spinner.show();
-    await this.getAllImages();
-    await this.getAbousUsData();
+    try {
+      await this.getAbousUsData();
+      await this.getAllImages();
+    } catch(err: any) {
+      console.log(err);
+    }
+    
   }
 
   get fval(){return this.myForm.controls;}
@@ -186,6 +191,9 @@ export class AboutComponent implements OnInit {
               };
               this.imageList.push(obj);
               resolve(1);
+              this.spinner.hide();
+            }, (err: any) => {
+              reject('no file');
               this.spinner.hide();
             });
           });

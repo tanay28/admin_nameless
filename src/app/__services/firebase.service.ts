@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from "@angular/fire/firestore";
-import { AchievementMaster, AboutUsMaster, OurWorkMaster, ContentMaster } from "../model/admin";
+import { AchievementMaster, AboutUsMaster, OurWorkMaster, ContentMaster, GalleryMaster, TeamMaster } from "../model/admin";
 import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
@@ -96,6 +96,54 @@ export class FirebaseService {
   }
   removeContent(documentId: any): Promise<any> {
     return this.db.collection('contentMaster').doc(documentId).delete();
+  }
+  //------------------ END ----------------------//
+
+   //---------- Gallery function --------------//
+  saveGalleryData(data : GalleryMaster) : Promise<any>{
+    const id = this.db.createId();
+    data._id = id;
+    return this.db.collection<GalleryMaster>("galleryMaster").doc(id).set(data);
+  }
+
+  getAllGalleryData() : Observable<GalleryMaster[]>{
+    return this.db.collection<GalleryMaster>('galleryMaster').valueChanges();
+  }
+
+  getSingleGalleryData(id: any) : Observable<GalleryMaster[]>{
+    return this.db.collection<GalleryMaster>('galleryMaster',ref => ref.where('_id' ,'==', id)).valueChanges();
+  }
+
+  queryGalleryDb(fieldName: any, searchKey: any) {
+    return this.db.collection<GalleryMaster>('galleryMaster',ref => ref.where(fieldName ,'==', searchKey)).valueChanges();
+  }
+
+  removeGalleryImage(documentId: any): Promise<any> {
+    return this.db.collection('galleryMaster').doc(documentId).delete();
+  }
+  //------------------ END ------------------------//
+
+  //------------- Team Function --------------//
+  saveTeamData(data : TeamMaster) : Promise<any>{
+    const id = this.db.createId();
+    data._id = id;
+    return this.db.collection<TeamMaster>("teamMaster").doc(id).set(data);
+  }
+
+  updateTeamData(documentId: any, data: any): Promise<any> {
+    data._id = documentId;  
+    return this.db.collection('teamMaster').doc(documentId).set(data);
+  }
+
+  getAllTeamData() : Observable<TeamMaster[]>{
+    return this.db.collection<TeamMaster>('teamMaster').valueChanges();
+  }
+
+  getSingleTeamData(id: any) : Observable<TeamMaster[]>{
+    return this.db.collection<TeamMaster>('teamMaster',ref => ref.where('_id' ,'==', id)).valueChanges();
+  }
+  removeTeamMate(documentId: any): Promise<any> {
+    return this.db.collection('teamMaster').doc(documentId).delete();
   }
   //------------------ END ----------------------//
 

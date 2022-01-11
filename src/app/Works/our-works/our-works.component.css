@@ -216,3 +216,8 @@ table {
     height: 80px;
     width: 90px;
 }
+
+.img-ins {
+    color: red;
+    font-weight: bold;
+}

@@ -200,3 +200,8 @@ label {
 .container {
     position: relative;
 }
+
+.img-ins {
+    color: red;
+    font-weight: bold;
+}

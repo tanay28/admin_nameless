@@ -7,6 +7,7 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import * as moment from 'moment';
 import { FirebaseService } from '../../__services/firebase.service';
+import { throwError } from 'rxjs';
 
 @Component({
   selector: 'app-our-works',
@@ -32,9 +33,9 @@ export class OurWorksComponent implements OnInit {
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
   contentTYpe: any;
-  dataSource: any;
-  displayedColumns: any;
+  selectedDataSource: any;
   contentList: any = [];
+  isEdit: boolean = false;
   constructor(
     private fb: FormBuilder,
     private storage: AngularFireStorage,
@@ -57,6 +58,8 @@ export class OurWorksComponent implements OnInit {
     this.submitted_films = false;
     this.isOurWorkData = false;
     this.contentList = [];
+    this.isEdit = false;
+    this.downloadURL = '';
     this.myForm = this.fb.group({
       description: ["",Validators.required],
     });
@@ -67,9 +70,14 @@ export class OurWorksComponent implements OnInit {
       youtubeLink: ["",Validators.required]
     });
     this.spinner.show();
-    await this.getAllFilmsImages();
-    await this.getOurWorksData();
-    await this.getAllContentData();
+    try {
+      await this.getAllFilmsImages();
+      await this.getOurWorksData();
+      await this.getAllContentData();
+    } catch (err: any) {
+      console.log(err);
+    }
+    
   }
 
   get fval(){return this.myForm.controls;}
@@ -148,29 +156,57 @@ export class OurWorksComponent implements OnInit {
     if (this.myFilmForm.invalid) {
       return;
     }
-    this.spinner.show();
-    let now = moment().format('YYYY-MM-DDTHH:mm:ss');
-    let obj = {
-      _id: '',
-      contentType: this.flval.contentType.value,
-      genre: this.flval.genre.value,
-      shortdes: this.flval.shortdes.value,
-      youtubeLink: this.flval.youtubeLink.value,
-      posterImgUrl: this.downloadURL,
-      createdAt: now,
-      modifiedAt: now,
-      author: 'CURRENT_USER'
-    };
-    this.fbService.saveContentData(obj).then(() => {
-      this.submitted_films = false;
-      this.myFilmForm.reset();
-      this.spinner.hide();
-      this.ngOnInit();
-      this.scroller.scrollToAnchor('targetTop');
-    }).catch(err => {
-      this.submitted_films = false;
-      this.spinner.hide();
-    });
+    if(!this.isEdit) {
+      this.spinner.show();
+      let now = moment().format('YYYY-MM-DDTHH:mm:ss');
+      let obj = {
+        _id: '',
+        contentType: this.flval.contentType.value,
+        genre: this.flval.genre.value,
+        shortdes: this.flval.shortdes.value,
+        youtubeLink: this.flval.youtubeLink.value,
+        posterImgUrl: this.downloadURL,
+        createdAt: now,
+        modifiedAt: now,
+        author: 'CURRENT_USER'
+      };
+      this.fbService.saveContentData(obj).then(() => {
+        this.submitted_films = false;
+        this.myFilmForm.reset();
+        this.spinner.hide();
+        this.ngOnInit();
+        this.scroller.scrollToAnchor('targetTop');
+      }).catch(err => {
+        this.submitted_films = false;
+        this.spinner.hide();
+      });
+    } else {
+      this.spinner.show();
+      let now = moment().format('YYYY-MM-DDTHH:mm:ss');
+      const documentId = this.selectedDataSource._id;
+      let obj = {
+        contentType: this.flval.contentType.value,
+        genre: this.flval.genre.value,
+        shortdes: this.flval.shortdes.value,
+        youtubeLink: this.flval.youtubeLink.value,
+        posterImgUrl: this.downloadURL == '' ? this.selectedDataSource.posterImgUrl : this.downloadURL,
+        createdAt: this.selectedDataSource.createdAt,
+        modifiedAt: now,
+        author: 'CURRENT_USER'
+      };
+
+      this.fbService.updateContentData(documentId, obj).then(() => {
+        this.submitted_films = false;
+        this.myFilmForm.reset();
+        this.spinner.hide();
+        this.ngOnInit();
+        this.scroller.scrollToAnchor('targetTop');
+      }).catch(err => {
+        this.submitted_films = false;
+        this.spinner.hide();
+      });
+      
+    }
   }
 
 
@@ -300,10 +336,14 @@ export class OurWorksComponent implements OnInit {
           resolve('got content data');
         } else {
           this.spinner.hide();
+          throwError('no content data');
           reject('no content data');
         }
+      },(err: any) => {
+        this.spinner.hide();
+        reject(err);
       })
-    })
+    });
   }
 
   removeContent(content: any) {
@@ -311,16 +351,22 @@ export class OurWorksComponent implements OnInit {
     const documentId = content._id;
     const imgUrl = content.posterImgUrl;
 
-    this.fbService.removeContent(documentId).then(() => {
+    this.fbService.removeContent(documentId).then(async() => {
       this.storage.storage.refFromURL(imgUrl).delete();
-      this.getAllContentData();
+      try{
+        await this.getAllContentData();
+      } catch(err: any) {
+        console.log(err);
+      }
+      
       this.spinner.hide();
     });
     
   }
 
   loadContent(content: any) {
-    console.log(content);
+    this.isEdit = true;
+    this.selectedDataSource = content;
     this.myFilmForm.patchValue({
       contentType: content.contentType,
       genre: content.genre,

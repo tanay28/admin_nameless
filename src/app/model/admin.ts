@@ -34,5 +34,27 @@ export interface ContentMaster {
     author: string
 }
 
+export interface GalleryMaster {
+    _id: string,
+    name: string,
+    createdAt: string,
+    isActive: boolean,
+    imgUrl: string,
+    author: string
+}
+
+export interface TeamMaster {
+    _id: string,
+    fullName: string,
+    role: string,
+    imgUrl: string
+    createdAt: string,
+    isActive: boolean,
+    modifiedAt: string,
+    author: string
+}
+
 
 //https://youtu.be/8bOJdr15_cU
+
+//https://youtu.be/f8gdO0JePQ0 tere rang
