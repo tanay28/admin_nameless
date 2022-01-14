@@ -1,6 +1,7 @@
 export interface AchievementMaster {
     _id: string,
     name: string,
+    imgType: string,
     createdAt: string,
     isActive: boolean,
     imgUrl: string

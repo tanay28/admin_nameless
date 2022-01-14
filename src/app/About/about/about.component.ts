@@ -26,6 +26,7 @@ export class AboutComponent implements OnInit {
   aboutusDataGiven: any;
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
+  typeOfUploadedImage: string = '';
   constructor(
     private fb: FormBuilder,
     private storage: AngularFireStorage,
@@ -37,6 +38,7 @@ export class AboutComponent implements OnInit {
   async ngOnInit()  {
     this.submitted = false;
     this.isAboutUsData = false;
+    this.typeOfUploadedImage = '';
     this.myForm = this.fb.group({
       description: ["",Validators.required],
     });
@@ -127,6 +129,7 @@ export class AboutComponent implements OnInit {
       let obj = {
         _id: '',
         name: img,
+        imgType: this.typeOfUploadedImage,
         createdAt: now,
         isActive: true,
         imgUrl: url
@@ -241,6 +244,11 @@ export class AboutComponent implements OnInit {
         this.removePhoto(img);
       }
     });
+  }
+
+  changeType(event: any) {
+    console.log(event.target.value);
+    this.typeOfUploadedImage = event.target.value;
   }
 }
 

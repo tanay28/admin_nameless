@@ -216,6 +216,7 @@ export class OurWorksComponent implements OnInit {
       let obj = {
         _id: '',
         name: img,
+        imgType: '',
         createdAt: now,
         isActive: true,
         imgUrl: url
