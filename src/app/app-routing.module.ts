@@ -5,11 +5,13 @@ import { ContactUsComponent } from './Contact/contact-us/contact-us.component';
 
 import { GalleryComponent } from './Gallery/gallery/gallery.component';
 import { HomeComponent } from './Home/home/home.component';
+import { LoginComponent } from './login/login.component';
 import { OurTeamComponent } from './Team/our-team/our-team.component';
 import { OurWorksComponent } from './Works/our-works/our-works.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', component: LoginComponent },
+  { path: 'home', component: HomeComponent },
   { path: 'about', component: AboutComponent },
   { path: 'works', component: OurWorksComponent },
   { path: 'gallery', component: GalleryComponent },

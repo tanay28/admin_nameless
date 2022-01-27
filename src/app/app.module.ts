@@ -28,6 +28,8 @@ import {MaterialExampleModule} from '../meterial/meterial.module';
 
 //Services
 import { FirebaseService } from './__services/firebase.service';
+import { NavbarComponent } from './navbar/navbar.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +39,9 @@ import { FirebaseService } from './__services/firebase.service';
     OurWorksComponent,
     GalleryComponent,
     OurTeamComponent,
-    ContactUsComponent
+    ContactUsComponent,
+    NavbarComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
