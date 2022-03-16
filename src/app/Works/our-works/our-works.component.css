@@ -213,11 +213,18 @@ table {
 
 .poster {
     border-radius: 50%;
-    height: 80px;
-    width: 90px;
+    height: 30px;
+    width: 35px;
 }
 
 .img-ins {
     color: red;
     font-weight: bold;
 }
+
+.icon-display {
+    transform: scale(.8);
+ }
+ .des {
+     text-align: justify;
+ }

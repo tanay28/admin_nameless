@@ -73,8 +73,6 @@
                                 <th>Image</th>
                                 <th>Full Name</th>
                                 <th>Role</th>
-                                <th>Author</th>
-                                <th>Created At</th>
                                 <th>Action</th>
                             </thead>
                             <tbody align="center">
@@ -83,8 +81,6 @@
                                     <td><img class="poster" src="{{content.imgUrl}}" alt="poster" /></td>
                                     <td>{{content.fullName}}</td>
                                     <td>{{content.role}}</td>
-                                    <td>{{content.author}}</td>
-                                    <td>{{content.createdAt}}</td>
                                     <td>
                                         <a mat-icon-button (click)="openSnackBar(content)" ><mat-icon>delete</mat-icon></a> |
                                         <a mat-icon-button (click)="loadContent(content)"><mat-icon>edit</mat-icon></a>

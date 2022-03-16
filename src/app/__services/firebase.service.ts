@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from "@angular/fire/firestore";
-import { AchievementMaster, AboutUsMaster, OurWorkMaster, ContentMaster, GalleryMaster, TeamMaster } from "../model/admin";
+import { AchievementMaster, AboutUsMaster, OurWorkMaster, ContentMaster, GalleryMaster, TeamMaster, userMaster, loginMaster } from "../model/admin";
 import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
@@ -8,6 +8,49 @@ import { Observable } from 'rxjs';
 export class FirebaseService {
 
   constructor(private db : AngularFirestore) { }
+
+
+  //------------- User Function --------------//
+  saveUserData(data : userMaster) : Promise<any>{
+    const id = this.db.createId();
+    data._id = id;
+    return this.db.collection<userMaster>("userMaster").doc(id).set(data);
+  }
+
+  getAllUserData() : Observable<userMaster[]>{
+    return this.db.collection<userMaster>('userMaster').valueChanges();
+  }
+
+  getSingleUserData(id: any) : Observable<userMaster[]>{
+    return this.db.collection<userMaster>('userMaster',ref => ref.where('username' ,'==', id)).valueChanges();
+  }
+
+  updateUserData(documentId: any, data: any): Promise<any> {
+    data._id = documentId;  
+    return this.db.collection('userMaster').doc(documentId).set(data);
+  }
+  //------------------- END ---------------------//
+
+  //------------- Login Function --------------//
+  saveLoginData(data : loginMaster) : Promise<any>{
+    const id = this.db.createId();
+    data._id = id;
+    return this.db.collection<loginMaster>("loginMaster").doc(id).set(data);
+  }
+
+  getAllLoginData() : Observable<loginMaster[]>{
+    return this.db.collection<loginMaster>('loginMaster').valueChanges();
+  }
+
+  getSingleLoginData(id: any) : Observable<loginMaster[]>{
+    return this.db.collection<loginMaster>('loginMaster',ref => ref.where('username' ,'==', id)).valueChanges();
+  }
+
+  updateLoginData(documentId: any, data: any): Promise<any> {
+    data._id = documentId;  
+    return this.db.collection('loginMaster').doc(documentId).set(data);
+  }
+  //------------------- END ---------------------//
 
   //---------- Achievement function --------------//
   saveAchievementData(data : AchievementMaster) : Promise<any>{

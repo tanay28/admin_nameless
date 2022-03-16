@@ -72,10 +72,20 @@ export class OurWorksComponent implements OnInit {
     this.spinner.show();
     try {
       await this.getAllFilmsImages();
+    } catch(err: any) {
+      console.log('film Image Err',err);
+    }
+
+    try {
       await this.getOurWorksData();
+    } catch(err: any) {
+      console.log('Our Work Err',err);
+    }
+
+    try {
       await this.getAllContentData();
     } catch (err: any) {
-      console.log(err);
+      console.log('All ContentData err',err);
     }
     
   }

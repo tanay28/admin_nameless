@@ -5,14 +5,13 @@
 export const environment = {
   production: false,
   firebaseConfig: {
-    apiKey: "AIzaSyBAejZC_XF8-G7cg8pqW600cTuAsIMf3q0",
-    authDomain: "halal-foood-1235.firebaseapp.com",
-    databaseURL: "https://halal-foood-1235.firebaseio.com",
-    projectId: "halal-foood-1235",
-    storageBucket: "halal-foood-1235.appspot.com",
-    messagingSenderId: "835060419167",
-    appId: "1:835060419167:web:f8e49ade1bac4692bea9ea",
-    measurementId: "G-L0Y5SRDDDW"
+    apiKey: "AIzaSyAQcYC96wE_UuO3KzbWf_4HRwOLDAZkOyY",
+    authDomain: "namelessmanage.firebaseapp.com",
+    projectId: "namelessmanage",
+    storageBucket: "namelessmanage.appspot.com",
+    messagingSenderId: "892425044390",
+    appId: "1:892425044390:web:eedae4199f5ef342ab4f67",
+    measurementId: "G-2JM0BERMXT"
   }
 };
 

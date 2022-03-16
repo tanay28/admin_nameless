@@ -30,6 +30,7 @@ import {MaterialExampleModule} from '../meterial/meterial.module';
 import { FirebaseService } from './__services/firebase.service';
 import { NavbarComponent } from './navbar/navbar.component';
 import { LoginComponent } from './login/login.component';
+import { SignupComponent } from './signup/signup.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { LoginComponent } from './login/login.component';
     OurTeamComponent,
     ContactUsComponent,
     NavbarComponent,
-    LoginComponent
+    LoginComponent,
+    SignupComponent
   ],
   imports: [
     BrowserModule,

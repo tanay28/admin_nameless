@@ -1,3 +1,19 @@
+export interface userMaster {
+    _id: string,
+    username: string,
+    password: string,
+    createdAt: string,
+    modifiedAt: string,
+    author: string
+}
+export interface loginMaster {
+    _id: string,
+    username: string,
+    loginAt: string,
+    logoutAt: string,
+    author: string
+}
+
 export interface AchievementMaster {
     _id: string,
     name: string,

@@ -62,7 +62,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="shortdes"><b>Short Description</b></label>
+                            <label for="shortdes"><b>Description</b></label>
                             <textarea class="form-control" id="shortdes" rows="3" required formControlName="shortdes"></textarea>
                             <div *ngIf="submitted_films && flval.shortdes.errors">
                                 <div *ngIf="flval.shortdes.errors.required" style="color: red;margin: 5px;">
@@ -72,7 +72,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="shortdes"><b>Youtube Link</b></label>
+                            <label for="shortdes"><b>Link</b></label>
                             <textarea class="form-control" id="shortdes" rows="3" formControlName="youtubeLink"></textarea>
                             <div *ngIf="submitted_films && flval.youtubeLink.errors">
                                 <div *ngIf="flval.youtubeLink.errors.required" style="color: red;margin: 5px;">
@@ -117,14 +117,14 @@
             <div class="row">
                 <div class="col">
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table table-responsive">
                             <thead align="center">
                                 <th>#</th>
                                 <th>Poster</th>
-                                <th>Content Type</th>
+                                <th>Type</th>
                                 <th>Genre</th>
                                 <th>Desription</th>
-                                <th>Youtube Link</th>
+                                <th>Link</th>
                                 <th>Action</th>
                             </thead>
                             <tbody align="center">
@@ -133,15 +133,19 @@
                                     <td><img class="poster" src="{{content.posterImgUrl}}" alt="poster" /></td>
                                     <td>{{content.contentType}}</td>
                                     <td>{{content.genre}}</td>
-                                    <td>{{content.shortdes}}</td>
+                                    <td class="des">{{content.shortdes}}</td>
                                     <td>
                                         <a mat-icon-button href="{{content.youtubeLink}}" class="btn-preview"  target="_blank" >
                                             <mat-icon>open_in_new</mat-icon>
                                         </a>
                                     </td>
                                     <td>
-                                        <a mat-icon-button (click)="openSnackBar(content)" ><mat-icon>delete</mat-icon></a> |
-                                        <a mat-icon-button (click)="loadContent(content)"><mat-icon>edit</mat-icon></a>
+                                        <a mat-icon-button (click)="openSnackBar(content)" >
+                                            <mat-icon class="icon-display">delete</mat-icon>
+                                        </a>|
+                                        <a mat-icon-button (click)="loadContent(content)">
+                                            <mat-icon class="icon-display">edit</mat-icon>
+                                        </a>
                                     </td>
                                 </tr>
                             </tbody>
