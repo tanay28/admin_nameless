@@ -11,7 +11,7 @@
               <form method="POST" class="needs-validation" [formGroup]="signupForm" (ngSubmit)="onSubmit()">
                 <div class="mb-3">
                   <label class="mb-2 text-muted" for="username">Username</label>
-                  <input id="username" type="text" class="form-control" name="username" formControlName="username" required autofocus>
+                  <input id="username" type="text" class="form-control" name="username" formControlName="username" required autofocus (blur)="onBlur($event)">
                 </div>
   
                 <div class="mb-3">

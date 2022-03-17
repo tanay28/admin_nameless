@@ -7,6 +7,7 @@ import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition
 import * as moment from 'moment';
 import { FirebaseService } from '../__services/firebase.service';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -18,6 +19,7 @@ export class SignupComponent implements OnInit {
 
   signupForm : any;
   submitted = false;
+  isUserExists = false;
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
 
@@ -33,6 +35,7 @@ export class SignupComponent implements OnInit {
 
   ngOnInit(): void {
     this.submitted = false;
+    this.isUserExists = false;
     this.signupForm = this.fb.group({
       username: ["",Validators.required],
       password: ["",Validators.required],
@@ -43,6 +46,16 @@ export class SignupComponent implements OnInit {
   }
 
   get flval(){ return this.signupForm.controls; }
+
+  onBlur(event: any) {
+    this.isUserExists = false;
+    const username = event.target.value;
+    this.fbService.getSingleUserData(this.flval.username.value).subscribe(res => {
+      if(res.length > 0) this.isUserExists = true;
+    }, err => {
+      console.log(err);
+    })
+  }
 
   onSubmit() {
     this.submitted = true;
@@ -72,47 +85,32 @@ export class SignupComponent implements OnInit {
       modifiedAt: now,
       author: 'CURRENT_USER'
     };
-
-    this.fbService.getSingleUserData(this.flval.username.value).subscribe(res => {
-      if(res.length > 0) {
-        this.spinner.hide();
-        this._snackBar.open('The user already exists..!!', 'Close', {
-          horizontalPosition: this.horizontalPosition,
-          verticalPosition: this.verticalPosition,
-          duration:5000
-        });
-      } else {
-        this.fbService.saveUserData(obj).then(() => {
-          this.submitted = false;
-          this.signupForm.reset();
-          this._router.navigate(['/']);
-          this.spinner.hide();
-          
-        }).catch(err => {
-          this.submitted = false;
-          this.spinner.hide();
-          this._snackBar.open('Internal server error.!! Please try again.', 'Close', {
-            horizontalPosition: this.horizontalPosition,
-            verticalPosition: this.verticalPosition,
-            duration:5000
-          });
-          this._router.navigate(['/']);
-        });
-      }
-      
-    }, err => {
-      this.submitted = false;
+  
+    if(this.isUserExists) {
       this.spinner.hide();
-      this._snackBar.open('Something went wrong.!! Please try again.', 'Close', {
+      this._snackBar.open('The user already exists..!!', 'Close', {
         horizontalPosition: this.horizontalPosition,
         verticalPosition: this.verticalPosition,
         duration:5000
       });
-      this._router.navigate(['/']);
-    });
-
-   
-
+    } else {
+      this.fbService.saveUserData(obj).then(() => {
+        this.submitted = false;
+        this.signupForm.reset();
+        this._router.navigate(['/']);
+        this.spinner.hide();
+        
+      }).catch(err => {
+        this.submitted = false;
+        this.spinner.hide();
+        this._snackBar.open('Internal server error.!! Please try again.', 'Close', {
+          horizontalPosition: this.horizontalPosition,
+          verticalPosition: this.verticalPosition,
+          duration:5000
+        });
+        this._router.navigate(['/']);
+      });
+    }
   }
 
 }

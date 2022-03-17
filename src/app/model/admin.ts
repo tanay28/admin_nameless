@@ -70,8 +70,3 @@ export interface TeamMaster {
     modifiedAt: string,
     author: string
 }
-
-
-//https://youtu.be/8bOJdr15_cU
-
-//https://youtu.be/f8gdO0JePQ0 tere rang
