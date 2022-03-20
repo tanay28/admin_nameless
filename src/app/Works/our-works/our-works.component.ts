@@ -19,6 +19,9 @@ export class OurWorksComponent implements OnInit {
 
   myForm : any;
   myFilmForm : any;
+  myMusicVideoForm : any;
+  myAudioStoryForm : any;
+  myTrailerForm : any;
   ref: any;
   task: any;
   uploadProgress: any;
@@ -32,10 +35,12 @@ export class OurWorksComponent implements OnInit {
   ourWorkDataGiven: any;
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
-  contentTYpe: any;
   selectedDataSource: any;
   contentList: any = [];
   isEdit: boolean = false;
+  selectedContentType: string = '';
+  isContentReleased: boolean = false;
+  contentReleaseStatus: any = 'false';
   constructor(
     private fb: FormBuilder,
     private storage: AngularFireStorage,
@@ -46,29 +51,42 @@ export class OurWorksComponent implements OnInit {
   ) { }
 
   async ngOnInit()  {
-    this.contentTYpe = [
-      { id: 'music_video', value: 'Music Video' },
-      { id: 'short_film', value: 'Short Film' },
-      { id: 'audio_story', value: 'Audio Story' },
-      { id: 'trailer', value: 'Trailer' },
-      { id: 'upcoming', value: 'Upcoming' },
-    ];
-
     this.submitted = false;
     this.submitted_films = false;
     this.isOurWorkData = false;
     this.contentList = [];
     this.isEdit = false;
     this.downloadURL = '';
+    this.selectedContentType = 'short_film';
     this.myForm = this.fb.group({
-      description: ["",Validators.required],
+      description: ['',Validators.required],
     });
     this.myFilmForm = this.fb.group({
-      contentType: ["",Validators.required],
-      genre: ["",Validators.required],
-      shortdes: ["",Validators.required],
-      youtubeLink: ["",Validators.required]
+      genre: ['',Validators.required],
+      shortdes: ['',Validators.required],
+      youtubeLink: ['',Validators.required],
+      release_status: ['',Validators.required]
     });
+
+    this.myMusicVideoForm = this.fb.group({
+      song: ['',Validators.required],
+      singer: ['',Validators.required],
+      link: ['',Validators.required],
+      release_status: ['',Validators.required]
+    });
+
+    this.myAudioStoryForm = this.fb.group({
+      story: ['',Validators.required],
+      writer: ['',Validators.required],
+      link: ['',Validators.required],
+      release_status: ['',Validators.required]
+    });
+
+    this.myTrailerForm = this.fb.group({
+      link: ['',Validators.required],
+      release_status: ['',Validators.required]
+    });
+
     this.spinner.show();
     try {
       await this.getAllFilmsImages();
@@ -92,6 +110,22 @@ export class OurWorksComponent implements OnInit {
 
   get fval(){return this.myForm.controls;}
   get flval(){return this.myFilmForm.controls;}
+  get flval_musicvideo(){return this.myMusicVideoForm.controls;}
+  get flval_audiostory(){return this.myAudioStoryForm.controls;}
+  get flval_trailer(){return this.myTrailerForm.controls;}
+
+  async onTypeClick(type: any) {
+    this.selectedContentType = '';
+    this.contentList = [];
+
+    this.selectedContentType = type;
+    try {
+      await this.getAllContentData();
+    } catch (err: any) {
+      console.log('All ContentData err',err);
+    }
+    console.log('list',this.contentList);
+  }
 
   getOurWorksData() {
     return new Promise((resolve, reject) => {
@@ -161,8 +195,7 @@ export class OurWorksComponent implements OnInit {
     
   }
 
-  onSubmit_content() {
-    this.submitted_films = true;
+  submit_shortFilm(type: any) {
     if (this.myFilmForm.invalid) {
       return;
     }
@@ -171,20 +204,24 @@ export class OurWorksComponent implements OnInit {
       let now = moment().format('YYYY-MM-DDTHH:mm:ss');
       let obj = {
         _id: '',
-        contentType: this.flval.contentType.value,
+        contentType: type,
         genre: this.flval.genre.value,
         shortdes: this.flval.shortdes.value,
         youtubeLink: this.flval.youtubeLink.value,
         posterImgUrl: this.downloadURL,
         createdAt: now,
         modifiedAt: now,
-        author: 'CURRENT_USER'
+        author: 'CURRENT_USER',
+        singer: '',
+        writer: '',
+        song: '',
+        story: '',
+        isReleased: this.flval.release_status.value
       };
       this.fbService.saveContentData(obj).then(() => {
         this.submitted_films = false;
         this.myFilmForm.reset();
         this.spinner.hide();
-        this.ngOnInit();
         this.scroller.scrollToAnchor('targetTop');
       }).catch(err => {
         this.submitted_films = false;
@@ -195,21 +232,25 @@ export class OurWorksComponent implements OnInit {
       let now = moment().format('YYYY-MM-DDTHH:mm:ss');
       const documentId = this.selectedDataSource._id;
       let obj = {
-        contentType: this.flval.contentType.value,
+        contentType: type,
         genre: this.flval.genre.value,
         shortdes: this.flval.shortdes.value,
         youtubeLink: this.flval.youtubeLink.value,
         posterImgUrl: this.downloadURL == '' ? this.selectedDataSource.posterImgUrl : this.downloadURL,
         createdAt: this.selectedDataSource.createdAt,
         modifiedAt: now,
-        author: 'CURRENT_USER'
+        author: 'CURRENT_USER',
+        singer: '',
+        writer: '',
+        song: '',
+        story: '',
+        isReleased: this.flval.release_status.value
       };
 
       this.fbService.updateContentData(documentId, obj).then(() => {
         this.submitted_films = false;
         this.myFilmForm.reset();
         this.spinner.hide();
-        this.ngOnInit();
         this.scroller.scrollToAnchor('targetTop');
       }).catch(err => {
         this.submitted_films = false;
@@ -217,6 +258,229 @@ export class OurWorksComponent implements OnInit {
       });
       
     }
+  }
+
+  submit_musicVideo(type: any) {
+    if (this.flval_musicvideo.invalid) {
+      return;
+    }
+    if(!this.isEdit) {
+      this.spinner.show();
+      let now = moment().format('YYYY-MM-DDTHH:mm:ss');
+      let obj = {
+        _id: '',
+        contentType: type,
+        genre: '',
+        shortdes: '',
+        youtubeLink: this.flval_musicvideo.link.value,
+        posterImgUrl: this.downloadURL,
+        createdAt: now,
+        modifiedAt: now,
+        author: 'CURRENT_USER',
+        singer: this.flval_musicvideo.singer.value,
+        writer: '',
+        song: this.flval_musicvideo.song.value,
+        story: '',
+        isReleased: this.flval_musicvideo.release_status.value
+      };
+      this.fbService.saveContentData(obj).then(() => {
+        this.submitted_films = false;
+        this.myMusicVideoForm.reset();
+        this.spinner.hide();
+        this.scroller.scrollToAnchor('targetTop');
+      }).catch(err => {
+        this.submitted_films = false;
+        this.spinner.hide();
+      });
+    } else {
+      this.spinner.show();
+      let now = moment().format('YYYY-MM-DDTHH:mm:ss');
+      const documentId = this.selectedDataSource._id;
+      let obj = {
+        contentType: type,
+        genre: '',
+        shortdes: '',
+        youtubeLink: this.flval_musicvideo.link.value,
+        posterImgUrl: this.downloadURL == '' ? this.selectedDataSource.posterImgUrl : this.downloadURL,
+        createdAt: this.selectedDataSource.createdAt,
+        modifiedAt: now,
+        author: 'CURRENT_USER',
+        singer: this.flval_musicvideo.singer.value,
+        writer: '',
+        song: this.flval_musicvideo.singer.value,
+        story: '',
+        isReleased: this.flval_musicvideo.release_status.value
+      };
+
+      this.fbService.updateContentData(documentId, obj).then(() => {
+        this.submitted_films = false;
+        this.myMusicVideoForm.reset();
+        this.spinner.hide();
+        this.scroller.scrollToAnchor('targetTop');
+      }).catch(err => {
+        this.submitted_films = false;
+        this.spinner.hide();
+      });
+      
+    }
+  }
+
+  submit_audioStory(type: any) {
+    if (this.flval_audiostory.invalid) {
+      return;
+    }
+    if(!this.isEdit) {
+      this.spinner.show();
+      let now = moment().format('YYYY-MM-DDTHH:mm:ss');
+      let obj = {
+        _id: '',
+        contentType: type,
+        genre: '',
+        shortdes: '',
+        youtubeLink: this.flval_audiostory.link.value,
+        posterImgUrl: this.downloadURL,
+        createdAt: now,
+        modifiedAt: now,
+        author: 'CURRENT_USER',
+        singer: '',
+        writer: this.flval_audiostory.writer.value,
+        song: '',
+        story: this.flval_audiostory.story.value,
+        isReleased: this.flval_audiostory.release_status.value,
+      };
+      this.fbService.saveContentData(obj).then(() => {
+        this.submitted_films = false;
+        this.myAudioStoryForm.reset();
+        this.spinner.hide();
+        this.scroller.scrollToAnchor('targetTop');
+      }).catch(err => {
+        this.submitted_films = false;
+        this.spinner.hide();
+      });
+    } else {
+      this.spinner.show();
+      let now = moment().format('YYYY-MM-DDTHH:mm:ss');
+      const documentId = this.selectedDataSource._id;
+      let obj = {
+        contentType: type,
+        genre: '',
+        shortdes: '',
+        youtubeLink: this.flval_audiostory.link.value,
+        posterImgUrl: this.downloadURL == '' ? this.selectedDataSource.posterImgUrl : this.downloadURL,
+        createdAt: this.selectedDataSource.createdAt,
+        modifiedAt: now,
+        author: 'CURRENT_USER',
+        singer: '',
+        writer: this.flval_audiostory.writer.value,
+        song: '',
+        story: this.flval_audiostory.story.value,
+        isReleased: this.flval_audiostory.release_status.value,
+      };
+
+      this.fbService.updateContentData(documentId, obj).then(() => {
+        this.submitted_films = false;
+        this.myMusicVideoForm.reset();
+        this.spinner.hide();
+        this.scroller.scrollToAnchor('targetTop');
+      }).catch(err => {
+        this.submitted_films = false;
+        this.spinner.hide();
+      });
+      
+    }
+  }
+
+  submit_trailer(type: any) {
+    if (this.flval_trailer.invalid) {
+      return;
+    }
+    if(!this.isEdit) {
+      this.spinner.show();
+      let now = moment().format('YYYY-MM-DDTHH:mm:ss');
+      let obj = {
+        _id: '',
+        contentType: type,
+        genre: '',
+        shortdes: '',
+        youtubeLink: this.flval_trailer.link.value,
+        posterImgUrl: this.downloadURL,
+        createdAt: now,
+        modifiedAt: now,
+        author: 'CURRENT_USER',
+        singer: '',
+        writer: '',
+        song: '',
+        story: '',
+        isReleased: this.flval_trailer.release_status.value
+      };
+      this.fbService.saveContentData(obj).then(() => {
+        this.submitted_films = false;
+        this.myTrailerForm.reset();
+        this.spinner.hide();
+        this.scroller.scrollToAnchor('targetTop');
+      }).catch(err => {
+        this.submitted_films = false;
+        this.spinner.hide();
+      });
+    } else {
+      this.spinner.show();
+      let now = moment().format('YYYY-MM-DDTHH:mm:ss');
+      const documentId = this.selectedDataSource._id;
+      let obj = {
+        contentType: type,
+        genre: '',
+        shortdes: '',
+        youtubeLink: this.flval_trailer.link.value,
+        posterImgUrl: this.downloadURL == '' ? this.selectedDataSource.posterImgUrl : this.downloadURL,
+        createdAt: this.selectedDataSource.createdAt,
+        modifiedAt: now,
+        author: 'CURRENT_USER',
+        singer: '',
+        writer: '',
+        song: '',
+        story: '',
+        isReleased: this.flval_trailer.release_status.value
+      };
+
+      this.fbService.updateContentData(documentId, obj).then(() => {
+        this.submitted_films = false;
+        this.myTrailerForm.reset();
+        this.spinner.hide();
+        this.scroller.scrollToAnchor('targetTop');
+      }).catch(err => {
+        this.submitted_films = false;
+        this.spinner.hide();
+      });
+      
+    }
+  }
+
+  async onSubmit_content() {
+    this.submitted_films = true;
+
+    if(this.selectedContentType == 'short_film') {
+     this.submit_shortFilm(this.selectedContentType);
+    } 
+
+    if(this.selectedContentType == 'music_video') {
+      this.submit_musicVideo(this.selectedContentType);
+    }
+
+    if(this.selectedContentType == 'audio_story') {
+      this.submit_audioStory(this.selectedContentType);
+    }
+
+    if(this.selectedContentType == 'trailer') {
+      this.submit_trailer(this.selectedContentType);
+    }
+
+    try {
+      await this.getAllContentData();
+    } catch (err: any) {
+      console.log('All ContentData err',err);
+    }
+
+    
   }
 
 
@@ -320,18 +584,76 @@ export class OurWorksComponent implements OnInit {
   sanitizeData(data: any) {
     let sanitizedData: any  = [];
     data.forEach((content: any) => {
-      let obj = {
-        _id: content._id,
-        author: content.author,
-        contentType: content.contentType,
-        createdAt: content.createdAt,
-        genre: content.genre,
-        modifiedAt: content.modifiedAt,
-        posterImgUrl: content.posterImgUrl,
-        shortdes: content.shortdes,
-        youtubeLink: content.youtubeLink
-      };
-      sanitizedData.push(obj);
+      if(this.selectedContentType == 'short_film') {
+        if(content.contentType == 'short_film') {
+          let obj = {
+            _id: content._id,
+            author: content.author,
+            contentType: content.contentType,
+            createdAt: content.createdAt,
+            genre: content.genre,
+            modifiedAt: content.modifiedAt,
+            posterImgUrl: content.posterImgUrl,
+            shortdes: content.shortdes,
+            youtubeLink: content.youtubeLink,
+            isReleased: content.isReleased
+          };
+          sanitizedData.push(obj);
+        }
+      }
+
+      if(this.selectedContentType == 'music_video') {
+        if(content.contentType == 'music_video') {
+          let obj = {
+            _id: content._id,
+            author: content.author,
+            contentType: content.contentType,
+            createdAt: content.createdAt,
+            modifiedAt: content.modifiedAt,
+            posterImgUrl: content.posterImgUrl,
+            youtubeLink: content.youtubeLink,
+            song: content.song,
+            singer: content.singer,
+            isReleased: content.isReleased
+          };
+          sanitizedData.push(obj);
+        }
+        
+      }
+
+      if(this.selectedContentType == 'audio_story') {
+        if(content.contentType == 'audio_story') {
+          let obj = {
+            _id: content._id,
+            author: content.author,
+            contentType: content.contentType,
+            createdAt: content.createdAt,
+            modifiedAt: content.modifiedAt,
+            posterImgUrl: content.posterImgUrl,
+            youtubeLink: content.youtubeLink,
+            story: content.story,
+            writer: content.writer,
+            isReleased: content.isReleased
+          };
+          sanitizedData.push(obj);
+        }
+      }
+
+      if(this.selectedContentType == 'trailer') {
+        if(content.contentType == 'trailer') {
+          let obj = {
+            _id: content._id,
+            author: content.author,
+            contentType: content.contentType,
+            createdAt: content.createdAt,
+            modifiedAt: content.modifiedAt,
+            posterImgUrl: content.posterImgUrl,
+            youtubeLink: content.youtubeLink,
+            isReleased: content.isReleased
+          };
+          sanitizedData.push(obj);
+        }
+      }
     });
     return sanitizedData;
   }
@@ -378,13 +700,47 @@ export class OurWorksComponent implements OnInit {
   loadContent(content: any) {
     this.isEdit = true;
     this.selectedDataSource = content;
-    this.myFilmForm.patchValue({
-      contentType: content.contentType,
-      genre: content.genre,
-      shortdes: content.shortdes,
-      youtubeLink: content.youtubeLink
-    });
+
+    if(this.selectedContentType == 'short_film') {
+      this.myFilmForm.patchValue({
+        genre: content.genre,
+        shortdes: content.shortdes,
+        youtubeLink: content.youtubeLink,
+        release_status: content.isReleased
+      });
+    }
+
+    if(this.selectedContentType == 'music_video') {
+      this.myMusicVideoForm.patchValue({
+        link: content.youtubeLink,
+        song: content.song,
+        singer: content.singer,
+        release_status: content.isReleased
+      });
+    }
+
+    if(this.selectedContentType == 'audio_story') {
+      this.myAudioStoryForm.patchValue({
+        link: content.youtubeLink,
+        story: content.story,
+        writer: content.writer,
+        release_status: content.isReleased
+      });
+    }
+
+    if(this.selectedContentType == 'trailer') {
+      this.myAudioStoryForm.patchValue({
+        link: content.youtubeLink,
+        release_status: content.isReleased
+      });
+    }
+    
     this.scroller.scrollToAnchor('targetEdit');
+  }
+
+  OnToggle() {
+    let flag;
+    alert(!flag);
   }
   
 }

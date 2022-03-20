@@ -118,7 +118,7 @@ export class FirebaseService {
   }
   //------------------ END ----------------------//
 
-  //------------- Content Function --------------//
+  //------------- Short Film Content Function --------------//
   saveContentData(data : ContentMaster) : Promise<any>{
     const id = this.db.createId();
     data._id = id;

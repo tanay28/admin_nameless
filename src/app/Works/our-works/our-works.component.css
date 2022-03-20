@@ -169,7 +169,7 @@ label {
     margin: 5px;
 }
 
-.content-list {
+.content-list-shortfilm {
     margin: 20px;
     padding: 10px;
     width: 54%;
@@ -177,7 +177,43 @@ label {
     border-radius: 5px;
     float: right;
     position: relative;
-    bottom: 945px;
+    bottom: 1030px;
+    box-shadow:5px 7px 5px gray;
+}
+
+.content-list-musicvideo {
+    margin: 20px;
+    padding: 10px;
+    width: 54%;
+    background-color: lightskyblue;
+    border-radius: 5px;
+    float: right;
+    position: relative;
+    bottom: 933px;
+    box-shadow:5px 7px 5px gray;
+}
+
+.content-list-audiostory {
+    margin: 20px;
+    padding: 10px;
+    width: 54%;
+    background-color: lightskyblue;
+    border-radius: 5px;
+    float: right;
+    position: relative;
+    bottom: 933px;
+    box-shadow:5px 7px 5px gray;
+}
+
+.content-list-trailer {
+    margin: 20px;
+    padding: 10px;
+    width: 54%;
+    background-color: lightskyblue;
+    border-radius: 5px;
+    float: right;
+    position: relative;
+    bottom: 787px;
     box-shadow:5px 7px 5px gray;
 }
 

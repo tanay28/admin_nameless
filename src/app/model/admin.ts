@@ -48,7 +48,12 @@ export interface ContentMaster {
     posterImgUrl: string,
     createdAt: string,
     modifiedAt: string,
-    author: string
+    author: string,
+    singer: string,
+    writer: string,
+    song: string,
+    story: string,
+    isReleased: boolean
 }
 
 export interface GalleryMaster {
