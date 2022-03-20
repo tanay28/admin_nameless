@@ -75,3 +75,13 @@ export interface TeamMaster {
     modifiedAt: string,
     author: string
 }
+
+export interface contactUsMaster {
+    _id: string,
+    fullName: string,
+    email: string,
+    msgDescription: string,
+    isSubscribed: boolean,
+    author: string,
+    createdAt: string,
+}

@@ -9,30 +9,24 @@
                     <thead>
                       <tr>
                         <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Login at</th>
+                        <th scope="col">Logout at</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
+                      <tr *ngFor="let details of logindetails; let i = index;">
+                        <th scope="row">{{i + 1}}</th>
+                        <td>{{details.username}}</td>
+                        <td>{{details.loginAt}}</td>
+                        <td>{{details.logoutAt}}</td>
                       </tr>
                     </tbody>
                   </table>
             </div>
         </div>
         <mat-divider></mat-divider>
-        <div class="tab-wrapper">
+        <!-- <div class="tab-wrapper">
             <h2>Details of Changes</h2>
             <div id="chartdiv_bar"></div>
         </div>
@@ -41,31 +35,37 @@
             <h2>Details of Usages</h2>
             <div id="chartdiv_line"></div>
         </div>
-        <mat-divider></mat-divider>
+        <mat-divider></mat-divider> -->
         <div class="tab-wrapper">
-          <h2>Details of Login</h2>
+          <h2>Details of Contacts</h2>
           <div class="table-responsive">
               <table class="table table-bordered">
                   <thead>
                     <tr>
                       <th scope="col">#</th>
-                      <th scope="col">First</th>
-                      <th scope="col">Last</th>
-                      <th scope="col">Handle</th>
+                      <th scope="col">Fullname</th>
+                      <th scope="col">Email</th>
+                      <th scope="col">Message</th>
+                      <th scope="col">Sent on</th>
+                      <th scope="col">Subscription Status</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2</th>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
-                      <td>@fat</td>
+                    <tr *ngFor = "let details of contactdetails; let i = index;">
+                      <th scope="row">{{i + 1}}</th>
+                      <td>{{details.fullName}}</td>
+                      <td>{{details.email}}</td>
+                      <td>{{details.msgDescription}}</td>
+                      <td>{{details.createdAt}}</td>
+                      <td>
+                        <span *ngIf="details.isSubscribed">
+                          <p style="color: green;"><b>Subscribed.!!</b></p>
+                        </span>
+
+                        <span *ngIf="!details.isSubscribed">
+                          <p style="color: red;"><b>Not Subscribed!</b></p>
+                        </span>
+                      </td>
                     </tr>
                   </tbody>
                 </table>

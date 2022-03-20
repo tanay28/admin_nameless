@@ -737,10 +737,4 @@ export class OurWorksComponent implements OnInit {
     
     this.scroller.scrollToAnchor('targetEdit');
   }
-
-  OnToggle() {
-    let flag;
-    alert(!flag);
-  }
-  
 }

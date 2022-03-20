@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+import * as moment from 'moment';
+import { NgxSpinnerService } from "ngx-spinner";
+import { FirebaseService } from '../../__services/firebase.service';
 
 @Component({
   selector: 'app-home',
@@ -10,11 +13,32 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  logindetails: any[] = [];
+  contactdetails: any[] = [];
+  constructor(
+    private spinner : NgxSpinnerService,
+    private fbService: FirebaseService
+  ) { }
 
-  ngOnInit(): void {
-    this.am_bar();
-    this.am_line();
+  async ngOnInit() {
+    // this.am_bar();
+    // this.am_line();
+    this.spinner.show();
+    this.logindetails = [];
+    this.contactdetails = [];
+
+    try {
+      await this.getloginDetails();
+    } catch(err) {
+      this.logindetails = [];
+    }
+
+    try {
+      await this.getContactDetails();
+    } catch(err) {
+      this.contactdetails = [];
+    }
+    this.spinner.hide();
   }
 
   am_bar() {
@@ -702,6 +726,32 @@ export class HomeComponent implements OnInit {
     dateAxis.start = 0.79;
     dateAxis.keepSelection = true;
 
+  }
+
+  getloginDetails() {
+    return new Promise((resolve, reject) => {
+      this.fbService.getAllLoginData().subscribe(res => {
+        if(res.length > 0) {
+          this.logindetails = res;
+        }
+        resolve('ok');
+      }, err => {
+        reject(err);
+      });
+    });
+  }
+
+  getContactDetails() {
+    return new Promise((resolve, reject) => {
+      this.fbService.getAllContactData().subscribe(res => {
+        if(res.length > 0) {
+          this.contactdetails = res;
+        }
+        resolve('ok');
+      }, err => {
+        reject(err);
+      });
+    });
   }
 
 }

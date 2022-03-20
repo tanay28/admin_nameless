@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from "@angular/fire/firestore";
-import { AchievementMaster, AboutUsMaster, OurWorkMaster, ContentMaster, GalleryMaster, TeamMaster, userMaster, loginMaster } from "../model/admin";
+import { AchievementMaster, AboutUsMaster, OurWorkMaster, ContentMaster, GalleryMaster, TeamMaster, userMaster, loginMaster, contactUsMaster } from "../model/admin";
 import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
@@ -40,6 +40,10 @@ export class FirebaseService {
 
   getAllLoginData() : Observable<loginMaster[]>{
     return this.db.collection<loginMaster>('loginMaster').valueChanges();
+  }
+
+  getAllContactData() : Observable<contactUsMaster[]>{
+    return this.db.collection<contactUsMaster>('contactUsMaster').valueChanges();
   }
 
   getSingleLoginData(id: any) : Observable<loginMaster[]>{
