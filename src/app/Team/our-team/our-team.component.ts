@@ -82,8 +82,8 @@ export class OurTeamComponent implements OnInit {
       let now = moment().format('YYYY-MM-DDTHH:mm:ss');
       let obj = {
         _id: '',
-        fullName: this.flval.fullName.value,
-        role: this.flval.role.value,
+        fullName: this.flval.fullName.value.toUpperCase(),
+        role: this.flval.role.value.toUpperCase(),
         imgUrl: this.downloadURL,
         createdAt: now,
         modifiedAt: now,
@@ -106,8 +106,8 @@ export class OurTeamComponent implements OnInit {
       let now = moment().format('YYYY-MM-DDTHH:mm:ss');
       const documentId = this.selectedDataSource._id;
       let obj = {
-        fullName: this.flval.fullName.value,
-        role: this.flval.role.value,
+        fullName: this.flval.fullName.value.toUpperCase(),
+        role: this.flval.role.value.toUpperCase(),
         imgUrl: this.downloadURL == '' ? this.selectedDataSource.imgUrl : this.downloadURL,
         createdAt: this.selectedDataSource.createdAt,
         modifiedAt: now,

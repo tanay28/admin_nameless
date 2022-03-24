@@ -5,13 +5,13 @@
 export const environment = {
   production: false,
   firebaseConfig: {
-    apiKey: "AIzaSyAQcYC96wE_UuO3KzbWf_4HRwOLDAZkOyY",
-    authDomain: "namelessmanage.firebaseapp.com",
-    projectId: "namelessmanage",
-    storageBucket: "namelessmanage.appspot.com",
-    messagingSenderId: "892425044390",
-    appId: "1:892425044390:web:eedae4199f5ef342ab4f67",
-    measurementId: "G-2JM0BERMXT"
+    apiKey: "AIzaSyBaftYBm5blwUYWtnFUNcHyjuIyxOH9XZ4",
+    authDomain: "nameless-management.firebaseapp.com",
+    projectId: "nameless-management",
+    storageBucket: "nameless-management.appspot.com",
+    messagingSenderId: "977419053883",
+    appId: "1:977419053883:web:d60ac2896363ddc8dc651e",
+    measurementId: "G-51WPX0XS70"
   }
 };
 
